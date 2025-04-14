@@ -1,0 +1,9 @@
+// settings.json
+{
+    "files.encoding": "utf8",
+    "files.autoGuessEncoding": true,
+    "files.associations": {
+      "cstring": "cpp",
+      "*.tcc": "cpp"
+    }
+  }
