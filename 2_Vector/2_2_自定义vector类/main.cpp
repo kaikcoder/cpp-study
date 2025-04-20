@@ -16,6 +16,10 @@ int main() {
 
     v.pop_back();
     std::cout << "After pop_back(), size: " << v.size() << std::endl;
+    v.insert(v.begin(),1);
+    for (size_t i = 0; i < v.size(); ++i) {
+        std::cout << v[i] << " ";
+    }
 
     v.clear();
     std::cout << "After clear(), size: " << v.size() << std::endl;

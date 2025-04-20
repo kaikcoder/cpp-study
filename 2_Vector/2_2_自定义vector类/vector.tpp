@@ -1,13 +1,15 @@
 #ifndef VECTOR_TPP
 #define VECTOR_TPP
+#include <cassert>
+#include <algorithm>
 
 namespace guokai {
 
-// 1.定义一个默认的构造函数
+// 1.默认构造函数
 template<typename T>
 vector<T>::vector() : _start(nullptr), _finish(nullptr), _end_of_storage(nullptr) {}
 
-// 2.定义一个指定大小的的构造函数
+// 2.构造函数：指定大小初始化为 val
 template<typename T>
 vector<T>::vector(size_t n, const T& val) {
     _start = new T[n];
@@ -16,17 +18,16 @@ vector<T>::vector(size_t n, const T& val) {
     _end_of_storage = _finish;
 }
 
-// 3.定义一个拷贝构造函数
+// 3.拷贝构造函数
 template<typename T>
 vector<T>::vector(const vector<T>& other) {
-    size_t n = other.size();
-    _start = new T[n];
+    _start = new T[other.capacity()];
     std::copy(other._start, other._finish, _start);
-    _finish = _start + n;
-    _end_of_storage = _finish;
+    _finish = _start + v.size();
+    _end_of_storage = _start + v.capacity();
 }
 
-// 4.定义一个赋值重载函数
+// 4.赋值运算符重载
 template<typename T>
 vector<T>& vector<T>::operator=(const vector<T>& other) {
     if (this != &other) {
@@ -40,45 +41,45 @@ vector<T>& vector<T>::operator=(const vector<T>& other) {
     return *this;
 }
 
-// 5.定义一个析构函数
+// 5.析构函数
 template<typename T>
 vector<T>::~vector() {
     delete[] _start;
 }
 
-// 6.定义一个函数返回当前元素的个数
+// 6.当前元素个数
 template<typename T>
 size_t vector<T>::size() const {
     return _finish - _start;
 }
 
-// 7.定义一个函数返回当前容量的大小
+// 7.当前容量
 template<typename T>
 size_t vector<T>::capacity() const {
     return _end_of_storage - _start;
 }
 
-// 8.定义一个函数判断是否为空
+// 8.是否为空
 template<typename T>
 bool vector<T>::empty() const {
     return _start == _finish;
 }
 
-// 9.定义一个函数用于非const下标访问
+// 9.非 const 下标访问
 template<typename T>
 T& vector<T>::operator[](size_t index) {
     if (index >= size()) throw std::out_of_range("index out of range");
     return _start[index];
 }
 
-// 10.定义一个函数用于const下标访问
+// 10. const 下标访问
 template<typename T>
 const T& vector<T>::operator[](size_t index) const {
     if (index >= size()) throw std::out_of_range("index out of range");
     return _start[index];
 }
 
-// 11.定义一个函数用于从末尾插入元素
+// 11. push_back
 template<typename T>
 void vector<T>::push_back(const T& val) {
     if (_finish == _end_of_storage) {
@@ -89,7 +90,7 @@ void vector<T>::push_back(const T& val) {
     ++_finish;
 }
 
-// 12.定义一个函数用于从末尾删除元素
+// 12. pop_back
 template<typename T>
 void vector<T>::pop_back() {
     if (_finish != _start) {
@@ -97,27 +98,27 @@ void vector<T>::pop_back() {
     }
 }
 
-// 13.定义一个函数用于清空所有元素
+// 13. clear
 template<typename T>
 void vector<T>::clear() {
     _finish = _start;
 }
 
-// 14.定义一个函数用于访问第一个元素
+// 14. front
 template<typename T>
 T& vector<T>::front() {
     if (empty()) throw std::out_of_range("vector is empty");
     return *_start;
 }
 
-// 15.定义一个函数用于访问最后一个元素
+// 15. back
 template<typename T>
 T& vector<T>::back() {
     if (empty()) throw std::out_of_range("vector is empty");
     return *(_finish - 1);
 }
 
-// 16.定义一个函数用于扩容
+// 16. reallocate
 template<typename T>
 void vector<T>::reallocate(size_t new_capacity) {
     size_t old_size = size();
@@ -127,6 +128,61 @@ void vector<T>::reallocate(size_t new_capacity) {
     _start = new_start;
     _finish = _start + old_size;
     _end_of_storage = _start + new_capacity;
+}
+
+// 17. begin & end
+template<typename T>
+typename vector<T>::iterator vector<T>::begin() {
+    return _start;
+}
+
+template<typename T>
+typename vector<T>::iterator vector<T>::end() {
+    return _finish;
+}
+
+// 18. insert
+template<typename T>
+void vector<T>::insert(iterator pos, const T& x) {
+    assert(pos <= _finish);
+    if (_finish == _end_of_storage) {
+        size_t offset = pos - _start;
+        size_t new_capacity = capacity() == 0 ? 2 : 2 * capacity();
+        reallocate(new_capacity);
+        pos = _start + offset;
+    }
+    for (iterator it = _finish; it != pos; --it) {
+        *it = *(it - 1);
+    }
+    *pos = x;
+    ++_finish;
+}
+
+// 19. erase
+template<typename T>
+typename vector<T>::iterator vector<T>::erase(iterator pos) {
+    assert(pos < _finish);
+    for (iterator it = pos; it + 1 < _finish; ++it) {
+        *it = *(it + 1);
+    }
+    --_finish;
+    return pos;
+}
+
+// 20. resize
+template<typename T>
+void vector<T>::resize(size_t n, const T& val) {
+    if (n < size()) {
+        _finish = _start + n;
+    } else {
+        if (n > capacity()) {
+            reallocate(n);
+        }
+        while (_finish < _start + n) {
+            *_finish = val;
+            ++_finish;
+        }
+    }
 }
 
 } // namespace guokai

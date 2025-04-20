@@ -10,6 +10,9 @@ namespace guokai {
 template<typename T>
 class vector {
 public:
+    using iterator = T*; // 原始指针就是迭代器
+    iterator begin();
+    iterator end();
     vector(); // 声明一个默认的构造函数
     vector(size_t n, const T& val = T()); // 声明一个指定大小的构造函数
     vector(const vector& other); // 声明一个拷贝构造函数
@@ -31,6 +34,9 @@ public:
     T& back(); // 访问最后一个元素
 
     void reallocate(size_t new_capacity); // 声明一个内部扩容函数
+    void insert(iterator pos, const T& x); // 声明一个插入元素的函数
+    iterator erase(iterator pos); // 声明一个删除指定位置元素的函数
+    void resize(size_t n,const T& val = T()); // 声明一个resize函数
 
 private:
     T* _start; // 指向存储空间的起始位置
