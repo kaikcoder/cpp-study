@@ -31,7 +31,7 @@ vector<T>::vector(const vector<T>& other) {
 template<typename T>
 vector<T>& vector<T>::operator=(const vector<T>& other) {
     if (this != &other) {
-        delete[] _start;
+        delete[] _start; // 先删除原来的空间
         size_t n = other.size();
         _start = new T[n];
         std::copy(other._start, other._finish, _start);
