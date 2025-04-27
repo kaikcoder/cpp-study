@@ -81,7 +81,7 @@ namespace guokai{ // 定义一个命名空间，防止和标准库冲突
             list(const list<T>& other){
                 _head = new Node;
                 _head->_next = _head;
-                _head->_prev = _prev;
+                _head->_prev = _head;
 
                 for(auto& val: other){
                     push_back(val);
@@ -144,7 +144,7 @@ namespace guokai{ // 定义一个命名空间，防止和标准库冲突
             }
 
             // 定义一个insert函数
-            void insert(iterator pos, const T&x){
+            void insert(iterator pos, const T& x){
                 Node* cur = pos._node; // 取出当前位置的节点指针
                 Node* prev = cur->_prev; // 再找到当前节点的前一个指针
                 Node* newnode = new Node(x); // 新建一个节点
@@ -208,7 +208,7 @@ namespace guokai{ // 定义一个命名空间，防止和标准库冲突
         cout << endl;
     }
 
-    // 6 .const迭代器的使用场景
+    // 6.const迭代器的使用场景
     void test_iterator_const(){
         list<int> lt; // 定义一个链表
         lt.push_back(1);
