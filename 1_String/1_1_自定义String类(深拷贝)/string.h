@@ -14,7 +14,6 @@ namespace guokai{
         const char& operator[](size_t i) const; // 重载[]运算符
         const char* c_str() const; // 返回c风格字符串
 
-
     private:
         char* _str; // 字符串存储的私有成员变量
     };
