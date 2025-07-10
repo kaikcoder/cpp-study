@@ -123,4 +123,5 @@ size_t string::find(char ch) const {
     return npos;
 }
 
+
 } // namespace guokai
