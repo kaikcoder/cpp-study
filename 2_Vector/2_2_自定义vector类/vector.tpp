@@ -5,9 +5,18 @@
 
 namespace guokai {
 
-// 1.默认构造函数
+// 1.定义一个默认构造函数
 template<typename T>
-vector<T>::vector() : _start(nullptr), _finish(nullptr), _end_of_storage(nullptr) {}
+vector<T>::vector() :_start(nullptr), _finish(nullptr), _end_of_storage(nullptr) {}
+
+// 2.定义一个指定大小的构造函数
+template<template T>
+vector<T>::vector(size_t n,const T& val){
+    _start = new T[n];
+    std::fill(_start,_start + n,val);
+    _finish = _start + n;
+    _end_of_storage = _finish;
+}
 
 // 2.构造函数：指定大小初始化为 val
 template<typename T>

@@ -1,59 +1,67 @@
 #pragma once
-
+#include <cstddef>
 #include <iostream>
-#include <cstring>
-#include <cassert>
 
+/*
+小结：把默认实参写在第一次声明处，在后续定义中省略，避免不同翻译单元对缺省值认识不一样
+*/
 namespace guokai {
 
-class string {
+class String {
 public:
-    typedef char* iterator;
+    using iterator       = char*;
+    using const_iterator = const char*;
 
-    string(const char* str = ""); // 构造函数
-    string(const string& s); // 拷贝构造函数
-    ~string(); // 析构函数
-    string& operator=(string s); // 重载赋值运算符
+    String(const char* str = ""); // 声明一个带参数的默认构造函数
+    String(const String& s); // 声明一个拷贝构造函数
+    ~String(); // 声明一个析构函数
 
-    iterator begin(); // 迭代器接口
-    iterator end();
+    String& operator=(const String& s); // 声明一个赋值运算符函数
 
-    void push_back(char c); // 声明一个push_back函数
-    void pop_back(); // 声明一个pop_back函数
-    void append(const char* str); // 声明一个append函数
-    void clear(); // 声明一个clear函数
-    void swap(string& s); // 声明一个swap函数
-    string& operator+=(char c); // 声明一个重载+=运算符函数(添加字符)
-    string& operator+=(const char* str); // 声明一个重载+=运算符重载(添加字符串)
+    /* 声明一个迭代器 */
+    iterator       begin()            { return _str; }
+    const_iterator begin()    const   { return _str; }
+    iterator       end()              { return _str + _size; }
+    const_iterator end()      const   { return _str + _size; }
 
-    const char* c_str() const; // 声明一个返回c风格字符串的函数
-    char& operator[](size_t index); // 声明一个下标运算符重载函数(可修改)
-    const char& operator[](size_t index) const; // 声明一个下标运算符重载函数(只读)
+    /* 声明基本增删改函数 */
+    void   push_back(char ch);
+    void   pop_back();
+    void   append(const char* str);
+    void   clear();
+    void   swap(String& s);
 
-    size_t size() const;
-    size_t capacity() const;
-    bool empty() const;
-    void resize(size_t newSize, char c = '\0');
-    void reserve(size_t newCapacity);
+    /* 声明运算符重载函数 */
+    String& operator+=(char c);
+    String& operator+=(const char* str);
+    const char& operator[](std::size_t index) const;
+    char& operator[](std::size_t index);
 
-    size_t find(char c, size_t pos = 0) const;
-    size_t find(const char* s, size_t pos = 0) const;
-    string& insert(size_t pos, char c);
-    string& insert(size_t pos, const char* str);
-    string& erase(size_t pos, size_t len);
+    /* 声明返回状态容量函数 */
+    std::size_t size()     const { return _size; }
+    std::size_t capacity() const { return _capacity; }
+    bool        empty()    const { return _size == 0; }
+    const char* c_str()    const { return _str; }
 
-    static const size_t npos = -1;
+    void resize(std::size_t newsize, char c = '\0');
+    void reserve(std::size_t newCapacity);
+
+    /* 声明查找插入删除函数*/
+    static const std::size_t npos;
+    std::size_t find(char c,               std::size_t pos = 0) const;
+    std::size_t find(const char* s,        std::size_t pos = 0) const;
+    String&     insert(std::size_t pos,    char c);
+    String&     insert(std::size_t pos,    const char* str);
+    String&     erase (std::size_t pos,    std::size_t len);
+
+    /* 友元输出 */
+    friend std::ostream& operator<<(std::ostream& os, const String& s)
+    { return os << s._str; }
+
 private:
-    char* _str;
-    size_t _size;
-    size_t _capacity;
+    char*        _str      = nullptr;
+    std::size_t  _size     = 0;
+    std::size_t  _capacity = 0;
 };
 
-
-std::ostream& operator<<(std::ostream& out, const string& s);
-std::istream& operator>>(std::istream& in, string& s);
-
-
-void test();
-
-} 
+} // namespace guokai
